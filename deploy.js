@@ -15,8 +15,7 @@ function main() {
 function installPM2() {
   return ssh.execCommand(
     'sudo npm install pm2 -g', {
-      cwd: '/home/ubuntu'
-  });
+      cwd: '/home/ubuntu', });
 }
 
 // transfers local project to the remote server
@@ -27,13 +26,14 @@ function transferProjectToRemote(failed, successful) {
     {
       recursive: true,
       concurrency: 1,
-      validate: function(itemPath) {
+      validate: function (itemPath) {
         const baseName = path.basename(itemPath);
         return (
           baseName.substr(0, 1) !== '.' && baseName !== 'node_modules' // do not allow dot files
         ); // do not allow node_modules
       },
-      tick: function(localPath, remotePath, error) {
+
+      tick: function (localPath, remotePath, error) {
         if (error) {
           failed.push(localPath);
           console.log('failed.push: ' + localPath);
@@ -42,15 +42,14 @@ function transferProjectToRemote(failed, successful) {
           console.log('successful.push: ' + localPath);
         }
       }
-    }
-  );
+    });
 }
 
 // creates a temporary folder on the remote server
 function createRemoteTempFolder() {
   return ssh.execCommand(
     'rm -rf starter-node-angular-temp && mkdir starter-node-angular-temp', {
-      cwd: '/home/ubuntu'
+      cwd: '/home/ubuntu',
   });
 }
 
@@ -58,7 +57,7 @@ function createRemoteTempFolder() {
 function stopRemoteServices() {
   return ssh.execCommand(
     'pm2 stop all && sudo service mongod stop', {
-      cwd: '/home/ubuntu'
+      cwd: '/home/ubuntu',
   });
 }
 
@@ -66,15 +65,15 @@ function stopRemoteServices() {
 function updateRemoteApp() {
   return ssh.execCommand(
     'cp -r starter-node-angular-temp/* starter-node-angular/ && rm -rf starter-node-angular-temp', {
-      cwd: '/home/ubuntu'
+      cwd: '/home/ubuntu',
   });
 }
 
 // restart mongodb and node services on the remote server
 function restartRemoteServices() {
   return ssh.execCommand(
-    'cd starter-node-angular && sudo service mongod start && pm2 start app.js', {
-      cwd: '/home/ubuntu'
+    'cd starter-node-angular && sudo service mongod start && pm2 start Nerd.js', {
+      cwd: '/home/ubuntu',
   });
 }
 
@@ -87,7 +86,7 @@ function sshConnect() {
       // TODO: ADD YOUR IP ADDRESS BELOW (e.g. '12.34.5.67')
       host: '3.88.190.227',
       username: 'ubuntu',
-      privateKey: 'node-key.pem'
+      privateKey: 'node-key.pem',
     })
     .then(function() {
       console.log('SSH Connection established.');
